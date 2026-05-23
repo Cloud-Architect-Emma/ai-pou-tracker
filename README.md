@@ -1,40 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# AI System Observability + Cost Tracker
 
-## Getting Started
+> **HackerNoon Proof of Usefulness Hackathon 2026** · Live PoU Score: see badge below
 
-First, run the development server:
+![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
+
+Real-time AI observability platform that tracks **actual usefulness** of AI systems — not just output quality. Measures success rates, fallback patterns, cache efficiency, latency, and cost savings across every request.
+
+## What it does
+
+Every call to `/api/request` flows through:
+1. **Cache check** — SHA-256 keyed, 1h TTL
+2. **Anthropic claude-haiku-4-5** — primary model, fast + accurate
+3. **Mistral-7B-Instruct** — secondary fallback via HuggingFace
+4. **Static fallback** — guaranteed response, never drops a request
+
+Every event is logged to persistent storage and surfaced via:
+- **Live dashboard** — Netflix-dark UI, auto-refreshes every 2s
+- **PoU Score gauge** — weighted per HackerNoon's official algorithm
+- **Prompt leaderboard** — viral loop showing top patterns
+- **AI insight engine** — Claude-generated analysis of your metrics
+- **Judge-ready report** — exportable evidence for the hackathon submission
+- **SVG badge** — embed in your README for viral social proof
+
+## Routes
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `POST` | `/api/request` | AI + fallback + cache pipeline |
+| `GET` | `/api/score` | PoU scoring engine (aligned to hackathon criteria) |
+| `GET` | `/api/stats` | Usage analytics, prompt leaderboard, hourly timeseries |
+| `POST` | `/api/explain` | LLM-generated insight engine (Claude Haiku) |
+| `GET` | `/api/badge` | Shareable SVG badge with live score |
+| `GET` | `/api/export` | Judge-ready JSON evidence report |
+
+## Quick start
 
 ```bash
+git clone https://github.com/Cloud-Architect-Emma/ai-pou-tracker
+cd ai-pou-tracker
+npm install
+cp .env.example .env.local
+# Fill in ANTHROPIC_API_KEY and HF_TOKEN
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Environment variables
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```env
+ANTHROPIC_API_KEY=sk-ant-...         # console.anthropic.com (free tier works)
+HF_TOKEN=hf_...                      # huggingface.co/settings/tokens (free)
+NEXT_PUBLIC_BASE_URL=https://...     # your deployed URL for badge links
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Deploying to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx vercel --prod
+# Set env vars in Vercel dashboard → Settings → Environment Variables
+```
 
-## Learn More
+## PoU Score algorithm
 
-To learn more about Next.js, take a look at the following resources:
+The score (0–1000) mirrors HackerNoon's official weighting:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+| Criterion | Weight | How we measure it |
+|-----------|--------|-------------------|
+| Real-World Utility | 25% | AI success rate |
+| Evidence of Traction | 25% | Request volume (log-scaled) |
+| Audience Reach | 20% | Novel prompt diversity |
+| Technical Innovation | 15% | Cache efficiency |
+| Market Timing | 10% | Error-free rate |
+| Functional Completeness | 5% | Latency health |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Hackathon tags
 
-## Deploy on Vercel
+`#proof-of-usefulness` `#ai-agents` `#ai-search` `#machine-learning` `#generative-ai` `#software-engineering` `#api` `#startup`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+---
+Built for [HackerNoon Proof of Usefulness Hackathon](https://hackathon.hackernoon.com/proof-of-usefulness) · Jan–Jun 2026
