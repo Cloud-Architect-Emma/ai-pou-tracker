@@ -1,9 +1,9 @@
 ![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
 
-# AI System Observability + Cost Tracker
+# AI System Observability and Cost Tracker
 Live demo: https://ai-pou-tracker.vercel.app
 
-# AI System Observability + Cost Tracker
+# AI System Observability and Cost Tracker
 
 > **HackerNoon Proof of Usefulness Hackathon 2026** · Live PoU Score: see badge below
 
@@ -14,24 +14,24 @@ Real-time AI observability platform that tracks **actual usefulness** of AI syst
 ## What it does
 
 Every call to `/api/request` flows through:
-1. **Cache check** — SHA-256 keyed, 1h TTL
-2. **Anthropic claude-haiku-4-5** — primary model, fast + accurate
-3. **Mistral-7B-Instruct** — secondary fallback via HuggingFace
-4. **Static fallback** — guaranteed response, never drops a request
+1. **Cache check**: SHA-256 keyed, 1h TTL
+2. **Anthropic claude-haiku-4-5**: primary model, fast + accurate
+3. **Mistral-7B-Instruct**: secondary fallback via HuggingFace
+4. **Static fallback**: guaranteed response, never drops a request
 
 Every event is logged to persistent storage and surfaced via:
-- **Live dashboard** — Netflix-dark UI, auto-refreshes every 2s
-- **PoU Score gauge** — weighted per HackerNoon's official algorithm
-- **Prompt leaderboard** — viral loop showing top patterns
-- **AI insight engine** — Claude-generated analysis of your metrics
-- **Judge-ready report** — exportable evidence for the hackathon submission
-- **SVG badge** — embed in your README for viral social proof
+- **Live dashboard**: Netflix-dark UI, auto-refreshes every 2s
+- **PoU Score gauge**: weighted per HackerNoon's official algorithm
+- **Prompt leaderboard**:  viral loop showing top patterns
+- **AI insight engine**:  Claude-generated analysis of your metrics
+- **Judge-ready report**: exportable evidence for the hackathon submission
+- **SVG badge**: embed in your README for viral social proof
 
 ## Routes
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `POST` | `/api/request` | AI + fallback + cache pipeline |
+| `POST` | `/api/request` | AI + fallback and cache pipeline |
 | `GET` | `/api/score` | PoU scoring engine (aligned to hackathon criteria) |
 | `GET` | `/api/stats` | Usage analytics, prompt leaderboard, hourly timeseries |
 | `POST` | `/api/explain` | LLM-generated insight engine (Claude Haiku) |
