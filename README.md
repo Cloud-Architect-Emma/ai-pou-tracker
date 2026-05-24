@@ -1,3 +1,8 @@
+![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
+
+# AI System Observability + Cost Tracker
+Live demo: https://ai-pou-tracker.vercel.app
+
 # AI System Observability + Cost Tracker
 
 > **HackerNoon Proof of Usefulness Hackathon 2026** · Live PoU Score: see badge below
