@@ -241,8 +241,11 @@ export default function Home() {
             }}>{t}</button>
           ))}
         </div>
+
+        {/* ── RIGHT SIDE NAV — Pricing link added here ── */}
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.dim }}>↻ {tick}</span>
+          <a href="/pricing" style={{ background: T.s3, color: "#ccc", border: `1px solid ${T.border}`, borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>Pricing</a>
           <button onClick={exportData} style={{ background: "#1a0f2e", color: "#a78bfa", border: "1px solid #2a1a4e", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Barlow, sans-serif" }}>↓ Export Evidence</button>
           <a href="/api/badge" target="_blank" rel="noreferrer" style={{ background: T.accent, color: "#fff", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>🏅 Get Badge</a>
         </div>
