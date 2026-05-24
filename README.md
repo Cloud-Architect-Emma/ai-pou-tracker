@@ -1,3 +1,6 @@
+## 📝 Articles
+- [Dev.to: Prove your AI is useful, not just running](https://dev.to/emmao/i-built-a-free-ai-observability-tool-prove-your-ai-is-useful-not-just-running-470a)
+
 ![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
 
 # AI System Observability and Cost Tracker
