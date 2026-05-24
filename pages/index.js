@@ -242,10 +242,11 @@ export default function Home() {
           ))}
         </div>
 
-        {/* ── RIGHT SIDE NAV — Pricing link added here ── */}
+        {/* ── RIGHT SIDE NAV — Pricing + FAQ links ── */}
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.dim }}>↻ {tick}</span>
           <a href="/pricing" style={{ background: T.s3, color: "#ccc", border: `1px solid ${T.border}`, borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>Pricing</a>
+          <a href="/faq" style={{ background: T.s3, color: "#ccc", border: `1px solid ${T.border}`, borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>FAQ</a>
           <button onClick={exportData} style={{ background: "#1a0f2e", color: "#a78bfa", border: "1px solid #2a1a4e", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Barlow, sans-serif" }}>↓ Export Evidence</button>
           <a href="/api/badge" target="_blank" rel="noreferrer" style={{ background: T.accent, color: "#fff", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>🏅 Get Badge</a>
         </div>
@@ -318,7 +319,6 @@ export default function Home() {
         {/* ── Main Content ── */}
         <div style={{ padding: 24, overflowY: "auto" }}>
 
-          {/* ── TAB 0: DASHBOARD ── */}
           {tab === 0 && (
             <>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
@@ -422,7 +422,6 @@ export default function Home() {
             </>
           )}
 
-          {/* ── TAB 1: LEADERBOARD ── */}
           {tab === 1 && (
             <>
               <div style={{ marginBottom: 24 }}>
@@ -477,7 +476,6 @@ export default function Home() {
             </>
           )}
 
-          {/* ── TAB 2: API ROUTES ── */}
           {tab === 2 && (
             <>
               <div style={{ marginBottom: 24 }}>
@@ -520,7 +518,6 @@ All logs persist to /tmp/pou-logs.json`}</pre>
             </>
           )}
 
-          {/* ── TAB 3: POU REPORT ── */}
           {tab === 3 && (
             <>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
