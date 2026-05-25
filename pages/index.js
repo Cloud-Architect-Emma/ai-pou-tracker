@@ -126,7 +126,7 @@ function ChartTip({ active, payload, label }) {
   );
 }
 
-const TABS = ["Dashboard", "Leaderboard", "API Routes", "PoU Report"];
+const TABS = ["Dashboard", "Leaderboard", "API Routes", "PoU Report", "AI Pricing"];
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -242,11 +242,10 @@ export default function Home() {
           ))}
         </div>
 
-        {/* ── RIGHT SIDE NAV — Pricing + FAQ links ── */}
+        {/* ── RIGHT SIDE NAV — Pricing link added here ── */}
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.dim }}>↻ {tick}</span>
           <a href="/pricing" style={{ background: T.s3, color: "#ccc", border: `1px solid ${T.border}`, borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>Pricing</a>
-          <a href="/faq" style={{ background: T.s3, color: "#ccc", border: `1px solid ${T.border}`, borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>FAQ</a>
           <button onClick={exportData} style={{ background: "#1a0f2e", color: "#a78bfa", border: "1px solid #2a1a4e", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Barlow, sans-serif" }}>↓ Export Evidence</button>
           <a href="/api/badge" target="_blank" rel="noreferrer" style={{ background: T.accent, color: "#fff", borderRadius: 6, padding: "7px 14px", fontSize: 11, fontWeight: 700, textDecoration: "none", fontFamily: "Barlow, sans-serif" }}>🏅 Get Badge</a>
         </div>
@@ -319,6 +318,7 @@ export default function Home() {
         {/* ── Main Content ── */}
         <div style={{ padding: 24, overflowY: "auto" }}>
 
+          {/* ── TAB 0: DASHBOARD ── */}
           {tab === 0 && (
             <>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
@@ -422,6 +422,7 @@ export default function Home() {
             </>
           )}
 
+          {/* ── TAB 1: LEADERBOARD ── */}
           {tab === 1 && (
             <>
               <div style={{ marginBottom: 24 }}>
@@ -476,6 +477,7 @@ export default function Home() {
             </>
           )}
 
+          {/* ── TAB 2: API ROUTES ── */}
           {tab === 2 && (
             <>
               <div style={{ marginBottom: 24 }}>
@@ -518,6 +520,7 @@ All logs persist to /tmp/pou-logs.json`}</pre>
             </>
           )}
 
+          {/* ── TAB 3: POU REPORT ── */}
           {tab === 3 && (
             <>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
@@ -610,7 +613,68 @@ All logs persist to /tmp/pou-logs.json`}</pre>
             </>
           )}
 
+          {/* ── TAB 4: AI PRICING ── */}
+          {tab === 4 && (
+            <>
+              <div style={{ marginBottom: 24 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>AI Model Pricing</h1>
+                <div style={{ fontSize: 12, color: T.dim, marginTop: 4 }}>Live pricing data · powered by Bright Data</div>
+              </div>
+              <PricingTable />
+            </>
+          )}
+
         </div>
+      </div>
+    </>
+  );
+}
+
+function PricingTable() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/pricing-data")
+      .then(r => r.json())
+      .then(d => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const providerColors = { OpenAI: "#74aa9c", Anthropic: "#c4823a", Google: "#4285f4" };
+
+  if (loading) return (
+    <div style={{ color: "#6b6b8a", fontSize: 13, padding: "40px 0", textAlign: "center" }}>
+      Loading pricing data via Bright Data…
+    </div>
+  );
+
+  return (
+    <>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, background: "#0a2a18", border: "1px solid #0d3a20", borderRadius: 8, padding: "10px 16px" }}>
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+        <span style={{ fontSize: 12, color: "#22c55e", fontWeight: 600 }}>
+          Bright Data · {data?.source} · Last updated: {new Date(data?.lastUpdated).toLocaleTimeString()}
+        </span>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 12, padding: "8px 16px", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: "#6b6b8a" }}>
+          <span>Model</span><span>Provider</span><span>Input</span><span>Output</span><span>Unit</span>
+        </div>
+        {data?.prices?.map((p, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 12, padding: "14px 16px", background: "#0e0e1f", border: "1px solid #1f1f3a", borderRadius: 8, fontSize: 13, alignItems: "center" }}>
+            <span style={{ color: "#fff", fontWeight: 600 }}>{p.model}</span>
+            <span style={{ color: providerColors[p.provider] ?? "#6b6b8a", fontWeight: 600, fontSize: 11 }}>{p.provider}</span>
+            <span style={{ color: "#22c55e", fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{p.input}</span>
+            <span style={{ color: "#f59e0b", fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{p.output}</span>
+            <span style={{ color: "#6b6b8a", fontSize: 11 }}>{p.unit}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 20, background: "#0a0a1e", border: "1px solid #1e1a3a", borderRadius: 8, padding: 14, fontSize: 12, color: "#6b6b8a" }}>
+        💡 Compare costs and choose the most cost-effective model. Your tracker saves money by using cache hits instead of live AI calls.
       </div>
     </>
   );
