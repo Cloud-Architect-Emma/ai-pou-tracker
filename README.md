@@ -1,114 +1,224 @@
-# AI PoU Tracker
+# go-jsonnet
 
-![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
+[![GoDoc Widget]][GoDoc] [![Travis Widget]][Travis] [![Coverage Status Widget]][Coverage Status]
 
-> Real-time AI observability platform that proves your AI is useful, not just running.
+[GoDoc]: https://godoc.org/github.com/google/go-jsonnet
+[GoDoc Widget]: https://godoc.org/github.com/google/go-jsonnet?status.png
+[Travis]: https://travis-ci.org/google/go-jsonnet
+[Travis Widget]: https://travis-ci.org/google/go-jsonnet.svg?branch=master
+[Coverage Status Widget]: https://coveralls.io/repos/github/google/go-jsonnet/badge.svg?branch=master
+[Coverage Status]: https://coveralls.io/github/google/go-jsonnet?branch=master
 
-##  Links
--  **Live Demo:** https://ai-pou-tracker.vercel.app
--  **Pricing:** https://ai-pou-tracker.vercel.app/pricing
--  **FAQ:** https://ai-pou-tracker.vercel.app/faq
--  **Dev.to Article:** https://dev.to/emmao/i-built-a-free-ai-observability-tool-prove-your-ai-is-useful-not-just-running-470a
--  **HackerNoon Article:** [Proof of Usefulness]
+This an implementation of [Jsonnet](http://jsonnet.org/) in pure Go. It is a feature complete, production-ready implementation. It is compatible with the original [Jsonnet C++ implementation](https://github.com/google/jsonnet). Bindings to C and Python are available (but not battle-tested yet).
 
-##  Try it in 30 seconds
-```bash
-curl -X POST https://ai-pou-tracker.vercel.app/api/request \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "hello world"}'
+This code is known to work on Go 1.12 and above. We recommend always using the newest stable release of Go.
+
+## Installation instructions
+
+```shell
+# Using `go get` to install binaries is deprecated.
+# The version suffix is mandatory.
+go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+
+# Or other tools in the 'cmd' directory
+go install github.com/google/go-jsonnet/cmd/jsonnet-lint@latest
 ```
 
-##  Tech Stack
-- Next.js 14 App Router
-- Upstash Redis (persistent serverless storage)
-- Bright Data (AI pricing intelligence)
-- Storyblok (headless CMS)
-- HuggingFace Inference API (fallback)
-- Vercel edge deployment
-![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
+It's also available on Homebrew:
 
-# AI System Observability and Cost Tracker
-Live demo: https://ai-pou-tracker.vercel.app
-
-# AI System Observability and Cost Tracker
-
-> **HackerNoon Proof of Usefulness Hackathon 2026** · Live PoU Score: see badge below
-
-![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
-
-Real-time AI observability platform that tracks **actual usefulness** of AI systems — not just output quality. Measures success rates, fallback patterns, cache efficiency, latency, and cost savings across every request.
-
-## What it does
-
-Every call to `/api/request` flows through:
-1. **Cache check**: SHA-256 keyed, 1h TTL
-2. **Anthropic claude-haiku-4-5**: primary model, fast + accurate
-3. **Mistral-7B-Instruct**: secondary fallback via HuggingFace
-4. **Static fallback**: guaranteed response, never drops a request
-
-Every event is logged to persistent storage and surfaced via:
-- **Live dashboard**: Netflix-dark UI, auto-refreshes every 2s
-- **PoU Score gauge**: weighted per HackerNoon's official algorithm
-- **Prompt leaderboard**:  viral loop showing top patterns
-- **AI insight engine**:  Claude-generated analysis of your metrics
-- **Judge-ready report**: exportable evidence for the hackathon submission
-- **SVG badge**: embed in your README for viral social proof
-
-## Routes
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| `POST` | `/api/request` | AI + fallback and cache pipeline |
-| `GET` | `/api/score` | PoU scoring engine (aligned to hackathon criteria) |
-| `GET` | `/api/stats` | Usage analytics, prompt leaderboard, hourly timeseries |
-| `POST` | `/api/explain` | LLM-generated insight engine (Claude Haiku) |
-| `GET` | `/api/badge` | Shareable SVG badge with live score |
-| `GET` | `/api/export` | Judge-ready JSON evidence report |
-
-## Quick start
-
-```bash
-git clone https://github.com/Cloud-Architect-Emma/ai-pou-tracker
-cd ai-pou-tracker
-npm install
-cp .env.example .env.local
-# Fill in ANTHROPIC_API_KEY and HF_TOKEN
-npm run dev
+```
+brew install go-jsonnet
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-## Environment variables
-
-```env
-ANTHROPIC_API_KEY=sk-ant-...         # console.anthropic.com (free tier works)
-HF_TOKEN=hf_...                      # huggingface.co/settings/tokens (free)
-NEXT_PUBLIC_BASE_URL=https://...     # your deployed URL for badge links
+`jsonnetfmt` and `jsonnet-lint` are also available as [pre-commit](https://github.com/pre-commit/pre-commit) hooks. Example `.pre-commit-config.yaml`:
+```yaml
+- repo: https://github.com/google/go-jsonnet
+  rev: # ref you want to point at, e.g. v0.17.0
+  hooks:
+    - id: jsonnet-format
+    - id: jsonnet-lint
 ```
 
-## Deploying to Vercel
+It can also be embedded in your own Go programs as a library:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/google/go-jsonnet"
+)
+
+func main() {
+	vm := jsonnet.MakeVM()
+
+	snippet := `{
+		person1: {
+		    name: "Alice",
+		    welcome: "Hello " + self.name + "!",
+		},
+		person2: self.person1 { name: "Bob" },
+	}`
+
+	jsonStr, err := vm.EvaluateAnonymousSnippet("example1.jsonnet", snippet)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(jsonStr)
+	/*
+	   {
+	     "person1": {
+	         "name": "Alice",
+	         "welcome": "Hello Alice!"
+	     },
+	     "person2": {
+	         "name": "Bob",
+	         "welcome": "Hello Bob!"
+	     }
+	   }
+	*/
+}
+```
+
+## Build instructions (go 1.12+)
 
 ```bash
-npx vercel --prod
-# Set env vars in Vercel dashboard → Settings → Environment Variables
+git clone git@github.com:google/go-jsonnet.git
+cd go-jsonnet
+go build ./cmd/jsonnet
+go build ./cmd/jsonnetfmt
+go build ./cmd/jsonnet-deps
+```
+To build with [Bazel](https://bazel.build/) instead:
+```bash
+git clone git@github.com:google/go-jsonnet.git
+cd go-jsonnet
+git submodule init
+git submodule update
+bazel build //cmd/jsonnet
+bazel build //cmd/jsonnetfmt
+bazel build //cmd/jsonnet-deps
+```
+The resulting _jsonnet_ program will then be available at a platform-specific path, such as _bazel-bin/cmd/jsonnet/darwin_amd64_stripped/jsonnet_ for macOS.
+
+Bazel also accommodates cross-compiling the program. To build the _jsonnet_ program for various popular platforms, run the following commands:
+
+Target platform | Build command
+--------------- | -------------------------------------------------------------------------------------
+Current host    | _bazel build //cmd/jsonnet_
+Linux           | _bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //cmd/jsonnet_
+macOS           | _bazel build --platforms=@io_bazel_rules_go//go/toolchain:darwin_amd64 //cmd/jsonnet_
+Windows         | _bazel build --platforms=@io_bazel_rules_go//go/toolchain:windows_amd64 //cmd/jsonnet_
+
+For additional target platform names, see the per-Go release definitions [here](https://github.com/bazelbuild/rules_go/blob/master/go/private/sdk_list.bzl#L21-L31) in the _rules_go_ Bazel package.
+
+Additionally if any files were moved around, see the section [Keeping the Bazel files up to date](#keeping-the-bazel-files-up-to-date).
+
+## Building libjsonnet.wasm
+
+```bash
+GOOS=js GOARCH=wasm go build -o libjsonnet.wasm ./cmd/wasm 
 ```
 
-## PoU Score algorithm
+Or if using bazel:
 
-The score (0–1000) mirrors HackerNoon's official weighting:
+```
+bazel build //cmd/wasm:libjsonnet.wasm
+```
 
-| Criterion | Weight | How we measure it |
-|-----------|--------|-------------------|
-| Real-World Utility | 25% | AI success rate |
-| Evidence of Traction | 25% | Request volume (log-scaled) |
-| Audience Reach | 20% | Novel prompt diversity |
-| Technical Innovation | 15% | Cache efficiency |
-| Market Timing | 10% | Error-free rate |
-| Functional Completeness | 5% | Latency health |
+## Running tests
 
-## Hackathon tags
+```bash
+./tests.sh  # Also runs `go test ./...`
+```
 
-`#proof-of-usefulness` `#ai-agents` `#ai-search` `#machine-learning` `#generative-ai` `#software-engineering` `#api` `#startup`
+## Running Benchmarks
 
----
-Built for [HackerNoon Proof of Usefulness Hackathon](https://hackathon.hackernoon.com/proof-of-usefulness) · Jan–Jun 2026
+### Method 1
+
+```bash
+go get golang.org/x/tools/cmd/benchcmp
+```
+
+1. Make sure you build a jsonnet binary _prior_ to making changes.
+
+```bash
+go build -o jsonnet-old ./cmd/jsonnet
+```
+
+2. Make changes (iterate as needed), and rebuild new binary
+
+```bash
+go build ./cmd/jsonnet
+```
+
+3. Run benchmark:
+
+```bash
+# e.g. ./benchmark.sh Builtin
+./benchmark.sh <TestNameFilter>
+```
+
+### Method 2
+
+1. get `benchcmp`
+
+```bash
+go get golang.org/x/tools/cmd/benchcmp
+```
+
+2. Make sure you build a jsonnet binary _prior_ to making changes.
+
+```bash
+make build-old
+```
+
+3. iterate with (which will also automatically rebuild the new binary `./jsonnet`)
+
+_replace the FILTER with the name of the test you are working on_
+
+```bash
+FILTER=Builtin_manifestJsonEx make benchmark
+```
+
+## Update cpp-jsonnet sub-repo
+
+This repo depends on [the original Jsonnet repo](https://github.com/google/jsonnet). Shared parts include the standard library, headers files for C API and some tests.
+
+You can update the submodule and regenerate dependent files with one command:
+```
+./update_cpp_jsonnet.sh
+```
+
+Note: It needs to be run from repo root.
+
+## Updating and modifying the standard library
+
+Standard library source code is kept in `cpp-jsonnet` submodule, because it is shared with [Jsonnet C++
+implementation](https://github.com/google/jsonnet).
+
+For performance reasons we perform preprocessing on the standard library, so for the changes to be visible, regeneration is necessary:
+
+```bash
+go run cmd/dumpstdlibast/dumpstdlibast.go cpp-jsonnet/stdlib/std.jsonnet > astgen/stdast.go
+```
+
+**The
+
+The above command creates the _astgen/stdast.go_ file which puts the desugared standard library into the right data structures, which lets us avoid the parsing overhead during execution. Note that this step is not necessary to perform manually when building with Bazel; the Bazel target regenerates the _astgen/stdast.go_ (writing it into Bazel's build sandbox directory tree) file when necessary.
+
+## Keeping the Bazel files up to date
+Note that we maintain the Go-related Bazel targets with [the Gazelle tool](https://github.com/bazelbuild/bazel-gazelle). The Go module (_go.mod_ in the root directory) remains the primary source of truth. Gazelle analyzes both that file and the rest of the Go files in the repository to create and adjust appropriate Bazel targets for building Go packages and executable programs.
+
+After changing any dependencies within the files covered by this Go module, it is helpful to run _go mod tidy_ to ensure that the module declarations match the state of the Go source code. In order to synchronize the Bazel rules with material changes to the Go module, run the following command to invoke [Gazelle's `update-repos` command](https://github.com/bazelbuild/bazel-gazelle#update-repos):
+```bash
+bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=bazel/deps.bzl%jsonnet_go_dependencies
+```
+
+Similarly, after adding or removing Go source files, it may be necessary to synchronize the Bazel rules by running the following command:
+```bash
+bazel run //:gazelle
+```
