@@ -1,6 +1,30 @@
-## 📝 Articles
-- [Dev.to: Prove your AI is useful, not just running](https://dev.to/emmao/i-built-a-free-ai-observability-tool-prove-your-ai-is-useful-not-just-running-470a)
+# AI PoU Tracker
 
+![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
+
+> Real-time AI observability platform that proves your AI is useful, not just running.
+
+##  Links
+-  **Live Demo:** https://ai-pou-tracker.vercel.app
+-  **Pricing:** https://ai-pou-tracker.vercel.app/pricing
+-  **FAQ:** https://ai-pou-tracker.vercel.app/faq
+-  **Dev.to Article:** https://dev.to/emmao/i-built-a-free-ai-observability-tool-prove-your-ai-is-useful-not-just-running-470a
+-  **HackerNoon Article:** [Proof of Usefulness]
+
+##  Try it in 30 seconds
+```bash
+curl -X POST https://ai-pou-tracker.vercel.app/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "hello world"}'
+```
+
+##  Tech Stack
+- Next.js 14 App Router
+- Upstash Redis (persistent serverless storage)
+- Bright Data (AI pricing intelligence)
+- Storyblok (headless CMS)
+- HuggingFace Inference API (fallback)
+- Vercel edge deployment
 ![PoU Score](https://ai-pou-tracker.vercel.app/api/badge)
 
 # AI System Observability and Cost Tracker
