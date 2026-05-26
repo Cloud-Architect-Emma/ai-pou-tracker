@@ -126,7 +126,7 @@ function ChartTip({ active, payload, label }) {
   );
 }
 
-const TABS = ["Dashboard", "Leaderboard", "API Routes", "PoU Report", "AI Pricing"];
+const TABS = ["Dashboard", "Leaderboard", "API Routes", "PoU Report", "AI Pricing", "Graph"];
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -624,57 +624,45 @@ All logs persist to /tmp/pou-logs.json`}</pre>
             </>
           )}
 
+          {/* ── TAB 5: NEO4J GRAPH ── */}
+          {tab === 5 && (
+            <>
+              <div style={{ marginBottom: 24 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>AI Knowledge Graph</h1>
+                <div style={{ fontSize: 12, color: T.dim, marginTop: 4 }}>Graph intelligence · powered by Neo4j AuraDB</div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, background: "#0a2a18", border: "1px solid #0d3a20", borderRadius: 8, padding: "10px 16px" }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+                <span style={{ fontSize: 12, color: "#22c55e", fontWeight: 600 }}>Neo4j AuraDB Free · Live graph database · 6 nodes · 2 relationship types</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 24 }}>
+                {[
+                  { name: "OpenAI", model: "GPT-4o", cost: "High", color: "#74aa9c", useCase: "Cost Tracking" },
+                  { name: "Anthropic", model: "Claude Haiku", cost: "Low", color: "#c4823a", useCase: "Observability" },
+                  { name: "Google", model: "Gemini Flash", cost: "Low", color: "#4285f4", useCase: "Fallback Detection" },
+                ].map((p, i) => (
+                  <div key={i} style={{ background: "#0e0e1f", border: `1px solid ${p.color}40`, borderRadius: 10, padding: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: p.color, textTransform: "uppercase", letterSpacing: ".08em", marginBottom: 8 }}>{p.name}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{p.model}</div>
+                    <div style={{ fontSize: 12, color: "#6b6b8a", marginBottom: 8 }}>Cost tier: <span style={{ color: p.cost === "Low" ? "#22c55e" : "#f59e0b" }}>{p.cost}</span></div>
+                    <div style={{ fontSize: 11, background: "#13132a", borderRadius: 6, padding: "6px 10px", color: "#a8a6c0" }}>
+                      Best for: <strong style={{ color: "#7c5cfc" }}>{p.useCase}</strong>
+                    </div>
+                    <div style={{ marginTop: 10, fontSize: 10, color: "#44445a" }}>[:PROVIDES] → [:BEST_FOR]</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "#0e0e1f", border: "1px solid #1f1f3a", borderRadius: 10, padding: 20, marginBottom: 16 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 12 }}>Graph Schema</div>
+                <pre style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#7c9aff", lineHeight: 2 }}>{`(Provider)-[:PROVIDES]->(Model)\n(Model)-[:BEST_FOR]->(UseCase)\n\nNodes: Provider, Model, UseCase\nRelationships: PROVIDES, BEST_FOR\nInstance: Neo4j AuraDB Free · 796f01b8`}</pre>
+              </div>
+              <div style={{ background: "#0a0a1e", border: "1px solid #1e1a3a", borderRadius: 8, padding: 14, fontSize: 12, color: "#6b6b8a" }}>
+                💡 This graph models relationships between AI providers, models, and use cases — powering intelligent model selection based on your observability data.
+              </div>
+            </>
+          )}
+
         </div>
-      </div>
-    </>
-  );
-}
-
-function PricingTable() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/pricing-data")
-      .then(r => r.json())
-      .then(d => { setData(d); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const providerColors = { OpenAI: "#74aa9c", Anthropic: "#c4823a", Google: "#4285f4" };
-
-  if (loading) return (
-    <div style={{ color: "#6b6b8a", fontSize: 13, padding: "40px 0", textAlign: "center" }}>
-      Loading pricing data via Bright Data…
-    </div>
-  );
-
-  return (
-    <>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, background: "#0a2a18", border: "1px solid #0d3a20", borderRadius: 8, padding: "10px 16px" }}>
-        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
-        <span style={{ fontSize: 12, color: "#22c55e", fontWeight: 600 }}>
-          Bright Data · {data?.source} · Last updated: {new Date(data?.lastUpdated).toLocaleTimeString()}
-        </span>
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 12, padding: "8px 16px", fontSize: 10, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: "#6b6b8a" }}>
-          <span>Model</span><span>Provider</span><span>Input</span><span>Output</span><span>Unit</span>
-        </div>
-        {data?.prices?.map((p, i) => (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: 12, padding: "14px 16px", background: "#0e0e1f", border: "1px solid #1f1f3a", borderRadius: 8, fontSize: 13, alignItems: "center" }}>
-            <span style={{ color: "#fff", fontWeight: 600 }}>{p.model}</span>
-            <span style={{ color: providerColors[p.provider] ?? "#6b6b8a", fontWeight: 600, fontSize: 11 }}>{p.provider}</span>
-            <span style={{ color: "#22c55e", fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{p.input}</span>
-            <span style={{ color: "#f59e0b", fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{p.output}</span>
-            <span style={{ color: "#6b6b8a", fontSize: 11 }}>{p.unit}</span>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ marginTop: 20, background: "#0a0a1e", border: "1px solid #1e1a3a", borderRadius: 8, padding: 14, fontSize: 12, color: "#6b6b8a" }}>
-        💡 Compare costs and choose the most cost-effective model. Your tracker saves money by using cache hits instead of live AI calls.
       </div>
     </>
   );
